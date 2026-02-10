@@ -31,8 +31,8 @@ const signup = async (req, res, next) => {
       provider: 'local',
     });
 
-    const token = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
+    const token = generateAccessToken(user._id, user.email);
+    const refreshToken = generateRefreshToken(user._id, user.email);
 
     const userObj = user.toJSON();
     delete userObj.password;
@@ -69,8 +69,8 @@ const login = async (req, res, next) => {
       return error(res, 'Account is deactivated.', 403);
     }
 
-    const token = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
+    const token = generateAccessToken(user._id, user.email);
+    const refreshToken = generateRefreshToken(user._id, user.email);
 
     const userObj = user.toJSON();
     delete userObj.password;
@@ -134,8 +134,8 @@ const googleAuth = async (req, res, next) => {
       return error(res, 'Account is deactivated.', 403);
     }
 
-    const token = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
+    const token = generateAccessToken(user._id, user.email);
+    const refreshToken = generateRefreshToken(user._id, user.email);
 
     const userObj = user.toJSON();
     delete userObj.password;
