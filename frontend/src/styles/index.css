@@ -100,6 +100,44 @@ a:hover {
   background: var(--color-error-bg);
 }
 
+/* Password field with show/hide toggle */
+.password-input-wrap {
+  position: relative;
+  display: block;
+}
+
+.password-input-wrap input {
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: color 0.2s, background 0.2s;
+}
+
+.password-toggle:hover {
+  color: var(--color-text);
+  background: var(--color-primary-light);
+}
+
+.password-toggle:focus {
+  outline: none;
+  color: var(--color-primary);
+}
+
 .input-error {
   font-size: 0.8125rem;
   color: var(--color-error);

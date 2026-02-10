@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { login } from '../api/auth';
+import { login, googleLogin } from '../api/auth';
+import PasswordInput from '../components/PasswordInput';
+import GoogleSignIn from '../components/GoogleSignIn';
 import '../styles/index.css';
 import './AuthLayout.css';
 
@@ -14,6 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
   const validate = () => {
@@ -40,6 +43,20 @@ export default function LoginPage() {
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credential) => {
+    setError('');
+    setGoogleLoading(true);
+    try {
+      const res = await googleLogin(credential);
+      if (res.data?.user) setUser(res.data.user);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err.message || 'Google sign-in failed. Please try again.');
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -76,14 +93,14 @@ export default function LoginPage() {
 
             <div className="input-wrap">
               <label htmlFor="login-password">Password</label>
-              <input
+              <PasswordInput
                 id="login-password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
                 className={fieldErrors.password ? 'error' : ''}
+                aria-invalid={!!fieldErrors.password}
               />
               {fieldErrors.password && <div className="input-error">{fieldErrors.password}</div>}
             </div>
@@ -91,6 +108,16 @@ export default function LoginPage() {
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
+
+            <div className="auth-divider">
+              <span>or</span>
+            </div>
+
+            <GoogleSignIn
+              onSuccess={handleGoogleSuccess}
+              onError={(msg) => setError(msg)}
+              disabled={loading || googleLoading}
+            />
           </form>
 
           <p className="auth-switch">

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { signup } from '../api/auth';
+import { signup, googleLogin } from '../api/auth';
+import PasswordInput from '../components/PasswordInput';
+import GoogleSignIn from '../components/GoogleSignIn';
 import '../styles/index.css';
 import './AuthLayout.css';
 
@@ -13,6 +15,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
   const validate = () => {
@@ -40,6 +43,20 @@ export default function SignupPage() {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credential) => {
+    setError('');
+    setGoogleLoading(true);
+    try {
+      const res = await googleLogin(credential);
+      if (res.data?.user) setUser(res.data.user);
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      setError(err.message || 'Google sign-in failed. Please try again.');
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -88,14 +105,14 @@ export default function SignupPage() {
 
             <div className="input-wrap">
               <label htmlFor="signup-password">Password</label>
-              <input
+              <PasswordInput
                 id="signup-password"
-                type="password"
-                autoComplete="new-password"
-                placeholder="At least 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 6 characters"
+                autoComplete="new-password"
                 className={fieldErrors.password ? 'error' : ''}
+                aria-invalid={!!fieldErrors.password}
               />
               {fieldErrors.password && <div className="input-error">{fieldErrors.password}</div>}
             </div>
@@ -103,6 +120,16 @@ export default function SignupPage() {
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? 'Creating account…' : 'Create account'}
             </button>
+
+            <div className="auth-divider">
+              <span>or</span>
+            </div>
+
+            <GoogleSignIn
+              onSuccess={handleGoogleSuccess}
+              onError={(msg) => setError(msg)}
+              disabled={loading || googleLoading}
+            />
           </form>
 
           <p className="auth-switch">
