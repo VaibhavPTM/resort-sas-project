@@ -52,6 +52,23 @@
   margin-bottom: 1.5rem;
 }
 
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.25rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
 .auth-switch {
   text-align: center;
   font-size: 0.9375rem;
@@ -61,6 +78,19 @@
 
 .auth-switch a {
   font-weight: 600;
+}
+
+/* Google Sign-In button container */
+.google-signin-wrapper {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-signin-wrapper iframe {
+  margin: 0 auto;
 }
 
 /* Brand panel (right side) */

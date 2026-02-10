@@ -33,4 +33,5 @@ Unauthenticated visits to `/dashboard` (or `/`) redirect to `/login`.
 
 ## Environment
 
-No `.env` required for local dev; API is proxied to `http://localhost:3000`. For a different backend, update the `proxy` target in `vite.config.js` or use `VITE_API_URL` and change the API client to use it.
+- **API:** No `.env` required for local dev; API is proxied to `http://localhost:3000`.
+- **Google Sign-In:** To show the "Sign in with Google" button, copy `.env.example` to `.env` and set `VITE_GOOGLE_CLIENT_ID` to the same value as the backend's `GOOGLE_CLIENT_ID` (from [Google Cloud Console](https://console.cloud.google.com/apis/credentials)). Restart the dev server after changing env.
